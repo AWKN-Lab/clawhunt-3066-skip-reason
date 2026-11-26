@@ -1,0 +1,16 @@
+=== alembic upgrade head ===
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001, create sop_skip_reason + seed 12 codes
+upgrade exit=0
+=== seed rows after upgrade ===
+row count: 12
+codes: ['not_applicable', 'member_declined', 'prerequisite_missing', 'staff_shortage', 'venue_unavailable', 'budget_not_approved', 'duplicate_step', 'step_unclear', 'system_blocked', 'customer_request', 'time_conflict', 'other_with_text']
+alembic_version: [('0001',)]
+=== alembic downgrade base ===
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running downgrade 0001 -> , create sop_skip_reason + seed 12 codes
+downgrade exit=0
+=== tables after downgrade ===
+tables: ['alembic_version']

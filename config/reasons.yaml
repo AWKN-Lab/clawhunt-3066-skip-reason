@@ -1,0 +1,143 @@
+# sop_skip_reason 规则配置（#3066 最小样品，任务 S6-SOPR-004）
+#
+# priority：数值越小优先级越高；同 priority 按 rule_id 字典序取胜。
+#   （本文件内 11 条规则的 priority 各不相同；同 priority 的取胜逻辑由
+#   tests/test_ac3_priority.py 用内存构造的规则集覆盖。）
+# pattern：字面关键词正则——各关键词转义后用 | 连接，大小写不敏感。
+#   命中 = 文本中出现 pattern 命中的任一关键词。
+# other_with_text 没有关键词规则，是未命中任何规则时的兜底映射。
+version: 1
+
+categories:
+  - id: condition_not_met
+    name: 条件不满足
+    description: 跳过原因来自前置条件本身不成立，与资源或流程无关。
+  - id: resource_shortage
+    name: 资源不足
+    description: 跳过原因来自人员、场地或预算等资源不到位。
+  - id: process_issue
+    name: 流程问题
+    description: 跳过原因来自流程步骤本身的重复、不清或系统阻断。
+  - id: other
+    name: 其他
+    description: 不属于前三类的原因，或未命中任何关键词规则的兜底。
+
+codes:
+  - code: not_applicable
+    category: condition_not_met
+    label: 不适用
+    meaning: 该步骤对当前会员或场景不适用，无需执行。
+    trigger: 文本提到步骤与当前情况无关、不适用或不符合条件。
+    scenario: 会员类型不在该步骤的适用范围内。
+  - code: member_declined
+    category: condition_not_met
+    label: 会员拒绝
+    meaning: 会员明确表示不做或不需要该步骤。
+    trigger: 文本提到拒绝、不需要、不用了或不想。
+    scenario: 会员当面拒绝某一步骤。
+  - code: prerequisite_missing
+    category: condition_not_met
+    label: 前置缺失
+    meaning: 执行该步骤所需的前置材料或条件未齐。
+    trigger: 文本提到缺少前置、前置条件不满足、资料不全或缺少材料。
+    scenario: 需要先补齐材料才能继续下一步。
+  - code: staff_shortage
+    category: resource_shortage
+    label: 人手不足
+    meaning: 当时没有足够人员执行该步骤。
+    trigger: 文本提到人手不够、没人、人员不足或排不上人。
+    scenario: 门店高峰期无人手带参观。
+  - code: venue_unavailable
+    category: resource_shortage
+    label: 场地不可用
+    meaning: 所需场地被占用或不可用。
+    trigger: 文本提到场地被占、没有场地、场地不可用或场馆已满。
+    scenario: 目标场地正在被其他活动占用。
+  - code: budget_not_approved
+    category: resource_shortage
+    label: 预算未批
+    meaning: 所需费用或预算尚未批准。
+    trigger: 文本提到预算没批、预算未批准、费用没批下来或没预算。
+    scenario: 活动预算还在审批流程中。
+  - code: duplicate_step
+    category: process_issue
+    label: 重复步骤
+    meaning: 该步骤已经执行过，无需再做。
+    trigger: 文本提到重复步骤、已经做过了或重复了。
+    scenario: 同一步骤在流程中出现两次。
+  - code: step_unclear
+    category: process_issue
+    label: 步骤不清
+    meaning: 执行者不清楚该步骤要做什么。
+    trigger: 文本提到步骤不清楚、不知道怎么做或看不懂步骤。
+    scenario: 新员工看不懂操作手册上的某一步。
+  - code: system_blocked
+    category: process_issue
+    label: 系统阻断
+    meaning: 系统故障导致步骤无法执行。
+    trigger: 文本提到系统卡住、系统故障、系统报错或打不开。
+    scenario: 录入系统崩溃，无法登记参观记录。
+  - code: customer_request
+    category: other
+    label: 客户要求
+    meaning: 应客户本人要求跳过该步骤。
+    trigger: 文本提到客户要求、客户提出或客人要求。
+    scenario: 客户主动要求跳过某一步。
+  - code: time_conflict
+    category: other
+    label: 时间冲突
+    meaning: 当时的时间安排冲突，无法执行。
+    trigger: 文本提到时间冲突、时间对不上、改天或没时间。
+    scenario: 会员赶时间，只能改约。
+  - code: other_with_text
+    category: other
+    label: 其他（兜底）
+    meaning: 未命中任何关键词规则的文本，默认映射到此编码。
+    trigger: 无关键词命中时默认映射。
+    scenario: 原因无法归类时的人工复核入口。
+
+rules:
+  - rule_id: R010
+    pattern: "系统卡住|系统故障|系统报错|打不开"
+    code: system_blocked
+    priority: 10
+  - rule_id: R020
+    pattern: "缺少前置|前置条件不满足|资料不全|缺少材料"
+    code: prerequisite_missing
+    priority: 20
+  - rule_id: R030
+    pattern: "人手不够|没人|人员不足|排不上人"
+    code: staff_shortage
+    priority: 30
+  - rule_id: R040
+    pattern: "场地被占|没有场地|场地不可用|场馆已满"
+    code: venue_unavailable
+    priority: 40
+  - rule_id: R050
+    pattern: "重复步骤|已经做过了|重复了"
+    code: duplicate_step
+    priority: 50
+  - rule_id: R060
+    pattern: "拒绝|不需要|不用了|不想"
+    code: member_declined
+    priority: 60
+  - rule_id: R070
+    pattern: "不适用|与我无关|不符合条件"
+    code: not_applicable
+    priority: 70
+  - rule_id: R080
+    pattern: "步骤不清楚|不知道怎么做|看不懂步骤"
+    code: step_unclear
+    priority: 80
+  - rule_id: R090
+    pattern: "预算没批|预算未批准|费用没批下来|没预算"
+    code: budget_not_approved
+    priority: 90
+  - rule_id: R100
+    pattern: "客户要求|客户提出|客人要求"
+    code: customer_request
+    priority: 100
+  - rule_id: R110
+    pattern: "时间冲突|时间对不上|改天|没时间"
+    code: time_conflict
+    priority: 110

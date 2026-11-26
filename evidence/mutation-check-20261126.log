@@ -1,0 +1,54 @@
+config sha256 before: 9fc24e6b56e82b386453ce9ee723f2fe2a7229a104481396fa3807127e109e24
+=== PHASE A: 原配置全量 pytest ===
+......................                                                   [100%]
+22 passed in 0.30s
+PHASE A exit=0
+=== PHASE B: 变异配置（R030 priority 30 -> 95）跑 test_ac3_priority.py ===
+.F.F.                                                                    [100%]
+=================================== FAILURES ===================================
+_____________________ test_multi_hit_real_case_from_corpus _____________________
+
+    def test_multi_hit_real_case_from_corpus():
+        # 证据中的真实案例（data/texts.txt 内亦有此句，见 output/normalized.csv）：
+        # 同时命中 R030（staff_shortage，priority 30）与 R090（budget_not_approved，90）。
+        text = "人手不够，而且预算没批，这一步先跳过。"
+        result = normalize(text)
+>       assert result.code == "staff_shortage"
+E       AssertionError: assert 'budget_not_approved' == 'staff_shortage'
+E         
+E         - staff_shortage
+E         + budget_not_approved
+
+tests/test_ac3_priority.py:24: AssertionError
+_____________________ test_priority_not_file_order_reverse _____________________
+
+    def test_priority_not_file_order_reverse():
+        # 反向测试：把规则顺序倒过来，取胜者不变；
+        # 若去掉 priority 逻辑、只按文件顺序取首个，取胜者会翻掉。
+        rules = load_rules()
+        text = "人手不够，而且预算没批，这一步先跳过。"
+        forward = resolve(match_all(text, rules))
+        reversed_rules = list(reversed(rules))
+        backward = resolve(match_all(text, reversed_rules))
+>       assert forward.rule_id == backward.rule_id == "R030"
+E       AssertionError: assert 'R090' == 'R030'
+E         
+E         - R030
+E         ?   ^
+E         + R090
+E         ?   ^
+
+tests/test_ac3_priority.py:48: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_ac3_priority.py::test_multi_hit_real_case_from_corpus - Ass...
+FAILED tests/test_ac3_priority.py::test_priority_not_file_order_reverse - Ass...
+2 failed, 3 passed in 0.13s
+PHASE B exit=1
+config sha256 after: 9fc24e6b56e82b386453ce9ee723f2fe2a7229a104481396fa3807127e109e24
+config unchanged: True
+=== PHASE C: 恢复原配置，全量 pytest ===
+......................                                                   [100%]
+22 passed in 0.27s
+PHASE C exit=0
+MUTATION CHECK: PASS
+mutation script exit=0
