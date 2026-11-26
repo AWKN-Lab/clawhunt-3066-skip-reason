@@ -1,0 +1,52 @@
+PY=python3.12 (Python 3.12.3)
+未找到能 import pytest 的解释器，尝试建本地 venv 并安装依赖...
+Collecting pyyaml==6.0.4 (from -r requirements.txt (line 1))
+  Using cached pyyaml-6.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.3 kB)
+Collecting pytest==9.2.0 (from -r requirements.txt (line 2))
+  Using cached pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+Collecting alembic==1.20.1 (from -r requirements.txt (line 3))
+  Using cached alembic-1.20.1-py3-none-any.whl.metadata (7.3 kB)
+Collecting sqlalchemy==2.1.9 (from -r requirements.txt (line 4))
+  Using cached sqlalchemy-2.1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.7 kB)
+Collecting iniconfig>=2 (from pytest==9.2.0->-r requirements.txt (line 2))
+  Using cached iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+Collecting packaging>=24 (from pytest==9.2.0->-r requirements.txt (line 2))
+  Using cached packaging-26.4-py3-none-any.whl.metadata (3.5 kB)
+Collecting pluggy<2,>=1.6 (from pytest==9.2.0->-r requirements.txt (line 2))
+  Using cached pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+Collecting pygments>=2.15 (from pytest==9.2.0->-r requirements.txt (line 2))
+  Using cached pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting Mako (from alembic==1.20.1->-r requirements.txt (line 3))
+  Using cached mako-1.4.3-py3-none-any.whl.metadata (2.9 kB)
+Collecting typing-extensions>=4.12 (from alembic==1.20.1->-r requirements.txt (line 3))
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting MarkupSafe>=2.0 (from Mako->alembic==1.20.1->-r requirements.txt (line 3))
+  Using cached markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Using cached pyyaml-6.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (849 kB)
+Using cached pytest-9.2.0-py3-none-any.whl (411 kB)
+Using cached alembic-1.20.1-py3-none-any.whl (270 kB)
+Using cached sqlalchemy-2.1.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.7 MB)
+Using cached iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+Using cached packaging-26.4-py3-none-any.whl (140 kB)
+Using cached pluggy-1.7.0-py3-none-any.whl (27 kB)
+Using cached pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached mako-1.4.3-py3-none-any.whl (80 kB)
+Using cached markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Installing collected packages: typing-extensions, pyyaml, pygments, pluggy, packaging, MarkupSafe, iniconfig, sqlalchemy, pytest, Mako, alembic
+Successfully installed Mako-1.4.3 MarkupSafe-3.0.4 alembic-1.20.1 iniconfig-2.3.1 packaging-26.4 pluggy-1.7.0 pygments-2.21.0 pytest-9.2.0 pyyaml-6.0.4 sqlalchemy-2.1.9 typing-extensions-4.16.0
+TEST_PY=.venv/bin/python (pytest 9.2.0)
+=== 1/4 生成语料 ===
+texts=300 singles=220 pairs=20 neutral=60
+expected hits=240 hit_rate=80.00% seed=20261126
+output=/home/hatch/workspace/goals/20/hidden_files/skill-sync-20261125/3066-build/repo/data/texts.txt
+=== 2/4 生成 CSV ===
+rows=300 hits=240 hit_rate=80.00%
+output=output/normalized.csv
+=== 3/4 自测 pytest ===
+......................                                                   [100%]
+22 passed in 0.33s
+=== 4/4 核对 CSV 行数与命中率 ===
+CSV rows=300 hits=240 hit_rate=80.00%
+SELFTEST: PASS
+setup.sh exit=0

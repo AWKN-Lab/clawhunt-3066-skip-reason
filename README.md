@@ -36,11 +36,17 @@ Alembic 迁移（SQLite 验证）。
 
 ```bash
 pip install -r requirements.txt
-python -m pytest -q            # 22 passed
+bash setup.sh               # 一键自测：选解释器、生成语料与 CSV、跑 pytest、核对命中率
+python -m pytest -q            # 22 passed（也可单独跑）
 python scripts/generate_texts.py
 python normalize_skip_reasons.py --input data/texts.txt --output output/normalized.csv
 # rows=300 hits=240 hit_rate=80.00%
 ```
+
+`setup.sh` 的解释器选择分两条线：`PY` 按版本选（第一个 Python >= 3.11），
+`TEST_PY` 按 pytest 选（遍历候选解释器，逐个试 `python -c "import pytest"`，
+第一个能过的就是测试解释器）；找不到时先建本地 venv 装依赖再重找，
+仍找不到就报错退出，绝不跳过自测。
 
 ## 文件结构
 
@@ -48,6 +54,7 @@ python normalize_skip_reasons.py --input data/texts.txt --output output/normaliz
 README.md                     本文件
 ACCEPTANCE-EVIDENCE.md        逐条验收证据（文件路径、测试名、真实输出）
 MANIFEST                      SHA256 清单（sha256sum -c 全过）
+setup.sh                      一键自测（解释器分两条线选，见下）
 config/reasons.yaml           12 编码、4 类别、11 条关键词规则
 src/matcher.py                关键词匹配与 priority 取胜逻辑
 src/normalizer.py             单条文本归一化

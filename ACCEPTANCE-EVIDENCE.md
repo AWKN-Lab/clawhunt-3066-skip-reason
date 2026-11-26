@@ -17,6 +17,21 @@ pytest exit=0
 
 22 个测试分布：AC1 8 个、AC2 4 个、AC3 5 个、matcher 3 个、S3 接口桩 2 个。
 
+## 一键自测 setup.sh
+
+`setup.sh` 跑完整自测：选解释器、生成语料、生成 CSV、跑 pytest、核对 CSV 行数与命中率。
+解释器选择分两条线：`PY` 按版本选（第一个 Python >= 3.11）；
+`TEST_PY` 按 pytest 选（遍历候选解释器，逐个试 `python -c "import pytest"`，
+第一个能过的就是测试解释器）；找不到时先建本地 venv 装依赖再重找，
+仍找不到就报错退出，绝不跳过自测。任何一步失败都退出非零。
+重跑日志：`evidence/selftest-setup-sh-20261126.log`（2026-11-26）——
+PY=python3.12（系统 Python 3.12.3），TEST_PY=.venv/bin/python（pytest 9.2.0，
+系脚本建 venv 装依赖后重找所得；两条选择线在本机上分开了）；
+22 passed in 0.33s，CSV rows=300 hits=240 hit_rate=80.00%，SELFTEST: PASS，exit=0。
+另有一次修正前的运行记录（3066-build/selftest-setup-sh-fail-loud-20261126.log，
+不进仓）：当时脚本只有试选、无 venv 兜底，系统 Python 无 pytest，脚本报错
+exit=1 而不是跳过自测——这正是本次修正要保住的行为。
+
 ## AC1：种子数据正好 12 编码、4 类别，code 唯一且小写下划线
 
 - 种子文件：`config/reasons.yaml`（SHA256 见 MANIFEST；变异自证前后一致：
